@@ -196,3 +196,13 @@ xdg-utils
 xfsprogs
 xl2tpd
 zfs-utils
+
+# ── Rocket OS Specific Packages ──
+gtk4
+libadwaita
+python-gobject
+kitty
+gamemode
+lib32-gamemode
+mangohud
+lib32-mangohud

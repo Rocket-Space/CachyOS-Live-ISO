@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# rocket-boot-bridge — Manipula EFI BootNext para Rocket Mode
+# Uso: rocket-boot-bridge [--to-windows|--to-rocket|--status]
+
+set -euo pipefail
+ROCKET_FLAG="/boot/rocket-mode-next.json"
+LOG="/var/log/rocket-mode.log"
+
+log() { echo "$(date '+%Y-%m-%d %H:%M:%S') | $*" | tee -a "$LOG"; }
+
+get_windows_bootnum() {
+    efibootmgr | grep -iE "(windows boot manager|windows)" | head -1 | grep -oP 'Boot\K[0-9A-F]+'
+}
+
+get_rocket_bootnum() {
+    efibootmgr | grep -i "rocket\|arch\|cachyos" | head -1 | grep -oP 'Boot\K[0-9A-F]+'
+}
+
+cmd_to_windows() {
+    local game_json="${1:-}"
+    local bootnum
+    bootnum=$(get_windows_bootnum)
+    if [[ -z "$bootnum" ]]; then
+        echo "ERROR: No se encontró entrada EFI de Windows" >&2; exit 1
+    fi
+    log "Configurando BootNext=$bootnum (Windows)"
+    efibootmgr --bootnext "$bootnum" >/dev/null
+    # Copiar configuración del juego a /boot para que Windows la lea
+    if [[ -n "$game_json" && -f "$game_json" ]]; then
+        cp "$game_json" "$ROCKET_FLAG"
+        log "Config de juego copiada: $game_json"
+    fi
+    log "Listo. Reinicia para entrar en Rocket Mode."
+}
+
+cmd_to_rocket() {
+    # Solo elimina el flag; el boot default ya es Rocket OS
+    [[ -f "$ROCKET_FLAG" ]] && rm -f "$ROCKET_FLAG"
+    log "BootNext limpiado. Próximo arranque: Rocket OS"
+}
+
+cmd_status() {
+    echo "=== Rocket Boot Bridge ==="
+    echo "Windows bootnum : $(get_windows_bootnum || echo 'No encontrado')"
+    echo "Rocket bootnum  : $(get_rocket_bootnum  || echo 'No encontrado')"
+    echo "Modo activo     : $(efibootmgr | grep 'BootNext' || echo 'Normal (Rocket OS)')"
+    echo "Config juego    : $([[ -f "$ROCKET_FLAG" ]] && echo "$ROCKET_FLAG" || echo 'Ninguna')"
+}
+
+case "${1:-}" in
+    --to-windows) cmd_to_windows "${2:-}" ;;
+    --to-rocket)  cmd_to_rocket ;;
+    --status)     cmd_status ;;
+    *) echo "Uso: rocket-boot-bridge [--to-windows [game.json]|--to-rocket|--status]"; exit 1 ;;
+esac

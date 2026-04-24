@@ -1,0 +1,12 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = cachyos-hello
+Target = cachyos-kernel-manager
+Target = cachyos-calamares-next
+
+[Action]
+Description = Rebranding CachyOS apps to Rocket OS...
+When = PostTransaction
+Exec = /usr/bin/bash -c "sed -i 's/Name=.*/Name=Rocket Base/' /usr/share/applications/cachyos-hello.desktop 2>/dev/null; sed -i 's/Icon=.*/Icon=rocketos/' /usr/share/applications/cachyos-hello.desktop 2>/dev/null; sed -i 's/Name=.*/Name=Rocket Kernel Manager/' /usr/share/applications/cachyos-kernel-manager.desktop 2>/dev/null; sed -i 's/Icon=.*/Icon=rocketos/' /usr/share/applications/cachyos-kernel-manager.desktop 2>/dev/null; sed -i 's/Name=.*/Name=Rocket instalar paquetes/' /usr/share/applications/calamares.desktop 2>/dev/null; sed -i 's/Icon=.*/Icon=calamares/' /usr/share/applications/calamares.desktop 2>/dev/null; exit 0"

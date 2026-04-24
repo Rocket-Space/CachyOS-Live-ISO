@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Rocket Mode
+Comment=Launch Games in Rocket Mode (Dual Boot)
+Exec=rocket-mode
+Icon=rocketos
+Terminal=false
+Categories=Game;System;
+StartupNotify=true

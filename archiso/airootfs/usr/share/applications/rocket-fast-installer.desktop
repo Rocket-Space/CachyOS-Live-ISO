@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Rocket Fast Installer
+Comment=Install Applications and Tools
+Exec=rocket-fast-installer
+Icon=rocketos
+Terminal=false
+Categories=System;
+StartupNotify=true
