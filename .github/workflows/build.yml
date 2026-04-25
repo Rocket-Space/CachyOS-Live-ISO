@@ -70,7 +70,7 @@ jobs:
     steps:
       - name: Clone CachyOS-Live-ISO
         id: clone
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Install dependencies
         id: dependencies
@@ -95,7 +95,7 @@ jobs:
 
       - name: Clone quicktest
         id: clone-quicktest
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           repository: 'quickemu-project/quicktest'
           path: 'quicktest'
