@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# Define sudo command if not root
+SUDO=""
+if (( EUID != 0 )); then
+    SUDO="sudo"
+fi
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; version 2 of the License.

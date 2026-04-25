@@ -118,7 +118,7 @@ modify_mkarchiso() {
     if [ $_is_hack_applied -ne 0 ]; then
         msg "Patching mkarchiso with disabled arch keyrings timer..."
 
-        sudo sed 's/_run_once _make_customize_airootfs/_run_once _make_customize_airootfs\n\trm -f "${pacstrap_dir}\/usr\/lib\/systemd\/system\/timers.target.wants\/archlinux-keyring-wkd-sync.timer"\n/' -i /usr/bin/mkarchiso
+        ${SUDO} sed 's/_run_once _make_customize_airootfs/_run_once _make_customize_airootfs\n\trm -f "${pacstrap_dir}\/usr\/lib\/systemd\/system\/timers.target.wants\/archlinux-keyring-wkd-sync.timer"\n/' -i /usr/bin/mkarchiso
     else
         msg "mkarchiso is already patched!"
     fi
@@ -164,13 +164,13 @@ run_build() {
 
     if $verbose; then
         msg2 "Making mkarchiso verbose"
-        sudo sed -i 's/quiet="y"/quiet="n"/g' /usr/bin/mkarchiso
+        ${SUDO} sed -i 's/quiet="y"/quiet="n"/g' /usr/bin/mkarchiso
     fi
 
     if $clean_first; then
         msg2 "Deleting the build folder if one exists - takes some time"
         umount_fs
-        [ -d ${work_dir} ] && sudo rm -rf ${work_dir}
+        [ -d ${work_dir} ] && ${SUDO} rm -rf ${work_dir}
     fi
 
     msg2 "Copying the Archiso folder to build work"
@@ -184,8 +184,8 @@ run_build() {
 
     [ -d "$outFolder/$_profile" ] || mkdir -p "$outFolder/$_profile"
     cd ${work_dir}/archiso/
-    sudo mkarchiso -v -w ${work_dir} -o "$outFolder/$_profile" ${work_dir}/archiso/
-    sudo chown "${SUDO_USER:-${USER:-$(id -un)}}" "$outFolder"
+    ${SUDO} mkarchiso -v -w ${work_dir} -o "$outFolder/$_profile" ${work_dir}/archiso/
+    ${SUDO} chown "${SUDO_USER:-${USER:-$(id -un)}}" "$outFolder"
 
     cp ${work_dir}/iso/arch/pkglist.x86_64.txt "$outFolder/$_profile/$(gen_iso_fn).pkgs.txt"
     mv "$outFolder/$_profile/rocketos-$(date --date="@${SOURCE_DATE_EPOCH:-$(date +%s)}" +%Y.%m.%d)-x86_64.iso" "$outFolder/$_profile/${iso_file}"
@@ -219,7 +219,7 @@ run_build() {
     if [[ "$remove_build_dir" == "true" ]]; then
         msg "Automatically removing build directory ($work_dir)..."
         umount_fs
-        [ -d ${work_dir} ] && sudo rm -rf ${work_dir}
+        [ -d ${work_dir} ] && ${SUDO} rm -rf ${work_dir}
         msg2 "Removed"
     fi
 }
