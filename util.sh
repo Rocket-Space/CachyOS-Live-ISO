@@ -68,7 +68,7 @@ prepare_dir(){
 }
 
 load_vars() {
-    [[ -f $1 ]] || return 1
+    [[ -f $1 ]] || return 0
 
     local var
     for var in {SRC,SRCPKG,PKG,LOG}DEST MAKEFLAGS PACKAGER CARCH GPGKEY; do
@@ -93,12 +93,14 @@ sign_with_key() {
         exit 1
     fi
 
-    msg2 "signing [%s] with key %s" "${1##*/}" "${GPGKEY}"
-    [[ -e "$1".sig ]] && rm "$1".sig
+    if [[ -n ${GPGKEY} ]]; then
+        msg2 "signing [%s] with key %s" "${1##*/}" "${GPGKEY}"
+        [[ -e "$1".sig ]] && rm "$1".sig
 
-    local SIGNWITHKEY=()
-    if [[ -n $GPGKEY ]]; then
+        local SIGNWITHKEY=()
         SIGNWITHKEY=(-u "${GPGKEY}")
+        gpg --detach-sign --use-agent "${SIGNWITHKEY[@]}" "$1"
+    else
+        info "No GPG key found, skipping signing for [%s]" "${1##*/}"
     fi
-    gpg --detach-sign --use-agent "${SIGNWITHKEY[@]}" "$1"
 }
