@@ -25,6 +25,7 @@ function qt_wait_else() {
         if qt_search_screenshot "$test_name" "$text"; then
             return 0
         fi
+        qt_send_key "shift"
         qt_wait_for_seconds "$interval"
     done
 
@@ -158,8 +159,8 @@ function test_calamares_summary() {
 
 function test_calamares_install() {
     qt_wait_for_text "$FUNCNAME" "$text_calamares_install" 10 30
-    qt_send_key_combo "tab"
-    qt_send_key_combo "spc"
+    qt_send_key_combo "left"
+    qt_send_key "return"
     qt_screenshot_ppm "$FUNCNAME"
 }
 
