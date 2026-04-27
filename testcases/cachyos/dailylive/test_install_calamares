@@ -159,7 +159,7 @@ function test_calamares_summary() {
 
 function test_calamares_install() {
     qt_wait_for_text "$FUNCNAME" "$text_calamares_install" 10 30
-    qt_send_key_combo "left"
+    qt_send_key_combo "tab"
     qt_send_key "return"
     qt_screenshot_ppm "$FUNCNAME"
 }
@@ -171,7 +171,7 @@ function test_calamares_failed() {
 }
 
 function test_calamares_finished() {
-    qt_wait_else "$FUNCNAME" "test_calamares_failed" "$text_calamares_finished" 30 60
+    qt_wait_else "$FUNCNAME" "test_calamares_failed" "$text_calamares_finished" 50 60
     qt_send_key_combo "spc"
     qt_screenshot_ppm "$FUNCNAME"
 }
